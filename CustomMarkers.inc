@@ -53,6 +53,7 @@ SOFTWARE.
 
 #if !defined _inc_y_timers
 	#tryinclude <YSI\y_timers>
+	#tryinclude <y_timers>
 	#if !defined _inc_y_timers
 		#error CustomMarkers.inc could not locate YSI\y_timers.inc file, please check your server includes
 	#endif
