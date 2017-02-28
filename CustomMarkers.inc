@@ -6,7 +6,7 @@
  | |___| |_| \__ \ || (_) | | | | | | | |  | | (_| | |  |   <  __/ |  \__ \.
   \_____\__,_|___/\__\___/|_| |_| |_| |_|  |_|\__,_|_|  |_|\_\___|_|  |___/
 	
-VERSION 1.0
+VERSION 1.1
 
 SA-MP : http://forum.sa-mp.com/member.php?u=257910
 GitHub: https://github.com/YouzerName
