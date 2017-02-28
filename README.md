@@ -3,3 +3,5 @@ This include allows you to have a wide variety of marker types for players in SA
 ## Installation
 ##### You need the Steamer plugin, https://github.com/samp-incognito/samp-streamer-plugin/releases
 ##### You need the y_timers include, https://github.com/Misiur/YSI-Includes
+##### Put CustomMarkers.inc in you includes folder
+##### Write ```#include <CustomMarkers>``` on top of your script
