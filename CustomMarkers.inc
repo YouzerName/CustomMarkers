@@ -150,10 +150,10 @@ enum MarkerInfo
 	Float:Streamdistance,
 	STREAMER_TAG_AREA Areaid, // Does not work in V1.0 yet
 }
-new PlayerMarkerStats[MAX_PLAYERS][MarkerInfo];
-new DynamicPlayerMarkers[MAX_PLAYERS][MAX_PLAYERS];
-new DynamicPlayerMarkersForAll[MAX_PLAYERS];
-new MarkerTimerActive[MAX_PLAYERS];
+static PlayerMarkerStats[MAX_PLAYERS][MarkerInfo];
+static DynamicPlayerMarkers[MAX_PLAYERS][MAX_PLAYERS];
+static DynamicPlayerMarkersForAll[MAX_PLAYERS];
+static MarkerTimerActive[MAX_PLAYERS];
 
 //---------------------------------------------------------------------------------------------------------------------
 
