@@ -6,7 +6,7 @@
  | |___| |_| \__ \ || (_) | | | | | | | |  | | (_| | |  |   <  __/ |  \__ \.
   \_____\__,_|___/\__\___/|_| |_| |_| |_|  |_|\__,_|_|  |_|\_\___|_|  |___/
 	
-VERSION 1.1
+VERSION 1.2
 
 SA-MP : http://forum.sa-mp.com/member.php?u=257910
 GitHub: https://github.com/YouzerName
@@ -53,9 +53,11 @@ SOFTWARE.
 
 #if !defined _inc_y_timers
 	#tryinclude <YSI\y_timers>
-	#tryinclude <y_timers>
 	#if !defined _inc_y_timers
-		#error CustomMarkers.inc could not locate YSI\y_timers.inc file, please check your server includes
+		#tryinclude <y_timers>
+		#if !defined _inc_y_timers
+			#error CustomMarkers.inc could not locate YSI\y_timers.inc file, please check your server includes
+		#endif
 	#endif
 #endif
 
@@ -148,12 +150,12 @@ enum MarkerInfo
 	Worldid,
 	Interiorid,
 	Float:Streamdistance,
-	STREAMER_TAG_AREA Areaid, // Does not work in V1.0 yet
+	STREAMER_TAG_AREA Areaid, // Does not work yet
 }
-static PlayerMarkerStats[MAX_PLAYERS][MarkerInfo];
-static DynamicPlayerMarkers[MAX_PLAYERS][MAX_PLAYERS];
-static DynamicPlayerMarkersForAll[MAX_PLAYERS];
-static MarkerTimerActive[MAX_PLAYERS];
+static PlayerMarkerStats[MAX_PLAYERS][MarkerInfo],
+DynamicPlayerMarkers[MAX_PLAYERS][MAX_PLAYERS],
+DynamicPlayerMarkersForAll[MAX_PLAYERS],
+MarkerTimerActive[MAX_PLAYERS];
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -168,7 +170,7 @@ stock SetPlayerCustomMarker(playerid, playerarray[], arraycount, type, color = -
 		PlayerMarkerStats[playerid][Interiorid] = interiorid;
 		PlayerMarkerStats[playerid][Streamdistance] = streamdistance;
 		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL;
-		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work in V1.0 yet
+		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work yet
 		PlayerMarkerStats[playerid][Arraycount] = arraycount;
 
 		GetPlayerPos(playerid, PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2]);
@@ -199,7 +201,7 @@ stock SetPlayerCustomMarkerForAll(playerid, type, color = -1, worldid = -1, inte
 		PlayerMarkerStats[playerid][Interiorid] = interiorid;
 		PlayerMarkerStats[playerid][Streamdistance] = streamdistance;
 		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL;
-		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work in V1.0 yet
+		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work yet
 
 		GetPlayerPos(playerid, PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2]);
 
@@ -243,7 +245,7 @@ timer UpdateMarkers[TIMER_INT](playerid)
 			DynamicPlayerMarkersForAll[playerid] = CreateDynamicMapIcon(PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2], PlayerMarkerStats[playerid][Type], PlayerMarkerStats[playerid][Color], PlayerMarkerStats[playerid][Worldid], PlayerMarkerStats[playerid][Interiorid], -1, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Style]);
 			for(new i; i < MAX_PLAYERS; i++)
 			{
-				if(IsPlayerConnected(i) && i != playerid /*&& IsPlayerInRangeOfPoint(i, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2])*/) Streamer_Update(i);
+				if(IsPlayerConnected(i) && i != playerid) Streamer_Update(i);
 			}
 		}
 		else
@@ -252,7 +254,7 @@ timer UpdateMarkers[TIMER_INT](playerid)
 			{
 				DestroyDynamicMapIcon(DynamicPlayerMarkers[playerid][i]);
 				DynamicPlayerMarkers[playerid][i] = CreateDynamicMapIcon(PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2], PlayerMarkerStats[playerid][Type], PlayerMarkerStats[playerid][Color], PlayerMarkerStats[playerid][Worldid], PlayerMarkerStats[playerid][Interiorid], PlayerMarkerStats[playerid][Showplayerid][i], PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Style]);
-				if(i != playerid /*&& IsPlayerInRangeOfPoint(i, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2])*/) Streamer_Update(i);
+				if(i != playerid) Streamer_Update(i);
 			}
 		}
 
