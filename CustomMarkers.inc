@@ -98,7 +98,7 @@ SetPlayerCustomMarker(playerid, playerarray[], arraycount, type, color = -1, wor
 		- streamdistance (OPTIONAL)
 			= The max distance, as a float, at which the markers can be seen by other players
 
-		- areaid (OPTIONAL)
+		- areaid (OPTIONAL) - Does not work in V1.0 yet
 			= The area, from the streamer include, in which the player markers should be shown
 */
 
@@ -147,7 +147,7 @@ enum MarkerInfo
 	Worldid,
 	Interiorid,
 	Float:Streamdistance,
-	STREAMER_TAG_AREA Areaid,
+	STREAMER_TAG_AREA Areaid, // Does not work in V1.0 yet
 }
 new PlayerMarkerStats[MAX_PLAYERS][MarkerInfo];
 new DynamicPlayerMarkers[MAX_PLAYERS][MAX_PLAYERS];
@@ -166,8 +166,8 @@ stock SetPlayerCustomMarker(playerid, playerarray[], arraycount, type, color = -
 		PlayerMarkerStats[playerid][Worldid] = worldid;
 		PlayerMarkerStats[playerid][Interiorid] = interiorid;
 		PlayerMarkerStats[playerid][Streamdistance] = streamdistance;
-		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL; // LOCAL ICON can cause bugs
-		PlayerMarkerStats[playerid][Areaid] = areaid; // DOES NOT WORK IN THIS VERSION
+		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL;
+		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work in V1.0 yet
 		PlayerMarkerStats[playerid][Arraycount] = arraycount;
 
 		GetPlayerPos(playerid, PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2]);
@@ -197,8 +197,8 @@ stock SetPlayerCustomMarkerForAll(playerid, type, color = -1, worldid = -1, inte
 		PlayerMarkerStats[playerid][Worldid] = worldid;
 		PlayerMarkerStats[playerid][Interiorid] = interiorid;
 		PlayerMarkerStats[playerid][Streamdistance] = streamdistance;
-		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL; // LOCAL ICON can cause bugs
-		PlayerMarkerStats[playerid][Areaid] = areaid; // DOES NOT WORK IN THIS VERSION
+		PlayerMarkerStats[playerid][Style] = MAPICON_GLOBAL;
+		PlayerMarkerStats[playerid][Areaid] = areaid; // Does not work in V1.0 yet
 
 		GetPlayerPos(playerid, PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2]);
 
@@ -214,12 +214,18 @@ stock SetPlayerCustomMarkerForAll(playerid, type, color = -1, worldid = -1, inte
 
 stock DestroyPlayerCustomMarker(playerid)
 {
-	MarkerTimerActive[playerid] = 0;
-	for(new i; i < PlayerMarkerStats[playerid][Arraycount]; i++)
+	if(PlayerMarkerStats[playerid][ShowType] == 1)
 	{
-		DestroyDynamicMapIcon(DynamicPlayerMarkers[playerid][i]);
+		DestroyDynamicMapIcon(DynamicPlayerMarkersForAll[playerid]);
 	}
-	DestroyDynamicMapIcon(DynamicPlayerMarkersForAll[playerid]);
+	else
+	{
+		for(new i; i < PlayerMarkerStats[playerid][Arraycount]; i++)
+		{
+			DestroyDynamicMapIcon(DynamicPlayerMarkers[playerid][i]);
+		}
+	}
+	MarkerTimerActive[playerid] = 0;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -236,7 +242,7 @@ timer UpdateMarkers[TIMER_INT](playerid)
 			DynamicPlayerMarkersForAll[playerid] = CreateDynamicMapIcon(PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2], PlayerMarkerStats[playerid][Type], PlayerMarkerStats[playerid][Color], PlayerMarkerStats[playerid][Worldid], PlayerMarkerStats[playerid][Interiorid], -1, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Style]);
 			for(new i; i < MAX_PLAYERS; i++)
 			{
-				if(IsPlayerConnected(i) && i != playerid) Streamer_Update(i);
+				if(IsPlayerConnected(i) && i != playerid /*&& IsPlayerInRangeOfPoint(i, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2])*/) Streamer_Update(i);
 			}
 		}
 		else
@@ -245,7 +251,7 @@ timer UpdateMarkers[TIMER_INT](playerid)
 			{
 				DestroyDynamicMapIcon(DynamicPlayerMarkers[playerid][i]);
 				DynamicPlayerMarkers[playerid][i] = CreateDynamicMapIcon(PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2], PlayerMarkerStats[playerid][Type], PlayerMarkerStats[playerid][Color], PlayerMarkerStats[playerid][Worldid], PlayerMarkerStats[playerid][Interiorid], PlayerMarkerStats[playerid][Showplayerid][i], PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Style]);
-				if(i != playerid) Streamer_Update(i);
+				if(i != playerid /*&& IsPlayerInRangeOfPoint(i, PlayerMarkerStats[playerid][Streamdistance], PlayerMarkerStats[playerid][Position][0], PlayerMarkerStats[playerid][Position][1], PlayerMarkerStats[playerid][Position][2])*/) Streamer_Update(i);
 			}
 		}
 
